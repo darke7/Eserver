@@ -13,6 +13,7 @@ let handlebars = require('express3-handlebars').create({
 		}
 	});
 
+let api = require('./router/api.js');
 let home = require('./router/home.js');
 
 app.engine('handlebars',handlebars.engine);
@@ -28,6 +29,8 @@ app.use((req,res,next)=>{
 	next();
 });
 app.use(express.static(__dirname+'/public'));
+
+app.use('/api',api);
 app.use('/', home);
 
 
