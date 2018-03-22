@@ -8,6 +8,8 @@ app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 
+
+app.use(express.static(__dirname+'/public'));
 app.use('/', home);
 
 
