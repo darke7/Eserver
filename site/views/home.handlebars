@@ -2,9 +2,17 @@
 <link rel="stylesheet" href="/styles/home.css">
 {{/section}}
 
-<h1>welcome Eserver!</h1>
-{{> weather}}
+<div class="clearfix">
+	<h1>welcome Eserver!</h1>
+	{{> weather}}
+	<div id="fortune"></div>
+</div>
 
 {{#section 'jq'}}
+<script src="https://cdn.bootcss.com/handlebars.js/4.0.11/handlebars.min.js"></script>
+<script id="fortuneTemplate" type="text/x-handlebars-template">
+	<p>your fortune:</p>
+	<p>\{{fortune}}</p>
+</script>
 <script src="/javascripts/home.js"></script>
 {{/section}}
