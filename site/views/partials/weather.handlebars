@@ -1,0 +1,9 @@
+<div class="weather">
+	<h3>Weather information</h3>
+	{{#each partials.weather.locations}}
+		<div class="location">
+			<p>{{name}}</p>
+			<p>weather:{{weather}} -- temperature:{{hot}}</p>
+		</div>
+	{{/each}}
+</div>
