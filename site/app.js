@@ -1,12 +1,24 @@
 let express = require('express');
 let app = express();
-let handlebars = require('express3-handlebars').create({defaultLayout:'main'});
+let handlebars = require('express3-handlebars').create({
+		defaultLayout:'main',
+		helpers:{
+			section(name,options){
+				if(!this._sections){
+					this._sections = {};
+				}
+				this._sections[name] = options.fn(this);
+				return null;
+			}
+		}
+	});
 
 let home = require('./router/home.js');
 
 app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
+app.disable('x-powered-by');
 
 app.use((req,res,next)=>{
 	if(!res.locals.partials){
@@ -17,7 +29,6 @@ app.use((req,res,next)=>{
 });
 app.use(express.static(__dirname+'/public'));
 app.use('/', home);
-
 
 
 
