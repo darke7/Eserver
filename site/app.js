@@ -1,9 +1,11 @@
 let express = require('express');
 let app = express();
 
+let home = require('./router/home.js');
+
 app.set('port',process.env.POERT||3000);
 
-
+app.use('', home);
 
 
 
