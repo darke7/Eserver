@@ -1,5 +1,7 @@
 let express = require('express');
 let app = express();
+let setWeatherData = require('./lib/weather-data.js');
+
 let handlebars = require('express3-handlebars').create({
 		defaultLayout:'main',
 		helpers:{
@@ -22,13 +24,7 @@ app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 app.disable('x-powered-by');
 
-app.use((req,res,next)=>{
-	if(!res.locals.partials){
-		res.locals.partials = {};
-	}
-	res.locals.partials.weather = getWeather();
-	next();
-});
+app.use(setWeatherData);
 app.use(express.static(__dirname+'/public'));
 
 app.use('/api',api);
@@ -54,29 +50,3 @@ app.listen(app.get('port'),(req,res)=>{
 	console.log(`started ${app.get('env')}:http://localhost:${app.get('port')}`);
 });
 
-let getWeather = ()=>{
-	return {
-		locations:[
-			{
-				name:'Beijing',
-				weather:'fine',
-				hot:'36°'
-			},
-			{
-				name:'London',
-				weather:'cloudy',
-				hot:'26°'
-			},
-			{
-				name:'Aegean',
-				weather:'rain',
-				hot:'22°'
-			},
-			{
-				name:'Sydney',
-				weather:'fine',
-				hot:'30°'
-			},
-		]
-	};
-};
