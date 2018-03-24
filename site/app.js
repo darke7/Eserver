@@ -15,6 +15,7 @@ let handlebars = require('express3-handlebars').create({
 
 let api = require('./router/api.js');
 let home = require('./router/home.js');
+let users = require('./router/users.js');
 
 app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
@@ -32,6 +33,7 @@ app.use(express.static(__dirname+'/public'));
 
 app.use('/api',api);
 app.use('/', home);
+app.use('/users',users);
 
 
 
@@ -43,6 +45,7 @@ app.use((req,res)=>{
 });
 
 app.use((err,req,res,next)=>{
+	console.log(err.stack);
 	res.status(500);
 	res.render('500');
 });

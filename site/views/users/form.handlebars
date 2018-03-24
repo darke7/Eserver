@@ -1,0 +1,29 @@
+<input type="file" multiple>
+
+{{#section 'jq'}}
+<script>
+	$(function(){
+		$('input').on('change',function(){
+			var fd = new FormData();
+			var files = $(this).prop('files');
+			var num = 0;
+			for(i in files){
+				if(!isNaN(i)){
+					num++;
+					fd.append(num,files[i]);
+				}
+			}
+			$.ajax({
+				url:'/users/upload',
+				contentType:false,
+				processData:false,
+				type:'post',
+				data:fd,
+				success:function(data){
+					alert(data.msg);
+				}
+			});
+		});
+	});
+</script>
+{{/section}}
