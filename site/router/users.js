@@ -18,7 +18,6 @@ router.post('/upload',(req,res)=>{
 			let dir = usersDir+'/'+Date.now();
 			fs.mkdirSync(dir);
 			for(i in files){
-				console.log(files[i]);
 				fs.renameSync(files[i].path,dir+'/'+files[i].name);
 			}
 			res.json({
