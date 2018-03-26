@@ -1,6 +1,14 @@
 let express = require('express');
 let app = express();
 let setWeatherData = require('./lib/weather-data.js');
+let credentials = require('./credentials.js');
+let flashMessage = require('./lib/flash-message.js');
+let cookie = require('cookie-parser')(credentials.cookieSecret);
+let session = require('express-session')({
+  resave: true,
+  saveUninitialized: true,
+  secret: credentials.cookieSecret,
+});
 
 let handlebars = require('express3-handlebars').create({
 		defaultLayout:'main',
@@ -24,7 +32,10 @@ app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 app.disable('x-powered-by');
 
+app.use(cookie);
+app.use(session);
 app.use(setWeatherData);
+app.use(flashMessage);
 app.use(express.static(__dirname+'/public'));
 
 app.use('/api',api);

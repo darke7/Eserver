@@ -1,0 +1,152 @@
+{{#section 'head'}}
+<link rel="stylesheet" href="/styles/uploadfile-form.css">
+{{/section}}
+
+<div id="app">
+	<div class="comWidth clearfix">
+		<div class="upload-content">
+			<label class="upload-button">
+				Please select a file
+				<input type="file" @change="upload(1,$event)" multiple>	
+			</label>
+			<div class="content">
+				<div class="file" v-for="v in files1">
+					<span class="filename">\{{v.name}}</span>
+					<div class="jd">
+						<div :style="{width:v.jd+'%'}"></div>
+					</div>
+					<span>\{{v.jd}}%</span>
+				</div>
+			</div>
+		</div>
+		
+		<div class="upload-content">
+			<label class="upload-button">
+				Please select a file
+				<input type="file" @change="upload(2,$event)" multiple>	
+			</label>
+			<div class="content">
+				<div class="file" v-for="v in files2">
+					<span class="filename">\{{v.name}}</span>
+					<div class="jd">
+						<div :style="{width:v.jd+'%'}"></div>
+					</div>
+					<span>\{{v.jd}}%</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="comWidth clearfix">
+		<div class="upload-content">
+			<label class="upload-button">
+				Please select a file
+				<input type="file" @change="upload(3,$event)" multiple>	
+			</label>
+			<div class="content">
+				<div class="file" v-for="v in files3">
+					<span class="filename">\{{v.name}}</span>
+					<div class="jd">
+						<div :style="{width:v.jd+'%'}"></div>
+					</div>
+					<span>\{{v.jd}}%</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="upload-content">
+			<label class="upload-button">
+				Please select a file
+				<input type="file" @change="upload(4,$event)" multiple>	
+			</label>
+			<div class="content">
+				<div class="file" v-for="v in files4">
+					<span class="filename">\{{v.name}}</span>
+					<div class="jd">
+						<div :style="{width:v.jd+'%'}"></div>
+					</div>
+					<span>\{{v.jd}}%</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{#section 'jq'}}
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+<script>
+	new Vue({
+		el:'#app',
+		data:{
+			files1:[],
+			files2:[],
+			files3:[],
+			files4:[],
+			urls:[
+				'/users/upload'
+			]
+		},
+		mounted:function(){},
+		methods:{
+			upload:function(type,e){
+				var _this = this;
+				var files = e.target.files;
+				var thisfiles = this['files'+type];
+				var url = this.urls[0];
+				var k = true;
+				for(i in files){
+					var isfile = thisfiles.some(function(obj){
+							return obj.name == files[i].name;
+						});
+					if(isfile){
+						k = false;
+					}
+				}
+				if(!k){
+					alert('已有此文件');
+					$(e.target).val('');
+					return;
+				}
+				for(i in files){
+					if(!isNaN(i)){
+						var fd = new FormData();
+						fd.append('file',files[i]);
+						thisfiles.push({
+							name:files[i].name,
+							jd:0
+						});
+						$.ajax({
+							url:'/users/upload',
+							type:'post',
+							data:fd,
+							contentType:false,
+							processData:false,
+							success:function(){
+								console.log('ok');
+							},
+							xhr:function(){
+								var xhr = $.ajaxSettings.xhr();
+								if(!xhr.name){
+									xhr.name = files[i].name;
+								}
+								if(xhr.upload){
+									xhr.upload.addEventListener('progress',function(e){
+										thisfiles.map(function(obj){
+											if(obj.name === xhr.name){
+												obj.jd = parseInt(e.loaded/e.total*100);
+											}
+											return obj;
+										});
+									});
+								}
+								return xhr;
+							}
+						});
+					}
+				}
+
+				$(e.target).val('');
+			}
+		}
+	});
+</script>
+{{/section}}

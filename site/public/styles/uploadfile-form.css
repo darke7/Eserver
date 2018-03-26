@@ -1,0 +1,54 @@
+	.file{
+		height: 40px;
+		line-height: 40px;
+		overflow: hidden;
+	}
+	.file .filename{
+		width: 100px;
+		display: inline-block;
+		overflow: hidden;
+	    white-space: nowrap;
+	    text-overflow: ellipsis;
+	    margin-right:20px;
+	}
+	.file .jd{
+		display: inline-block;
+		width: 150px;
+		height: 20px;
+		float: left;
+		margin-right:20px;
+		margin-top: 11px;
+	}
+	.file .jd div{
+		display: block;
+		height: 100%;
+		width: 0%;
+		background: green;
+		margin-right:20px;
+	}
+	.file span{
+		float: left;
+	}
+	.upload-content{
+		border:1px solid gray;
+		padding: 10px;
+		width: 400px;
+		margin: 50px;
+		min-height: 200px;
+		float: left;
+	}
+	.upload-button{
+		width:100%;
+		color:#fff;
+		height: 50px;
+		line-height: 50px;
+		text-align:center;
+		cursor: pointer;
+		background: url(../images/bg.jpg);
+	}
+	.upload-button input{
+		display: none;
+	}
+	p.title{
+		text-align: center;
+	}
