@@ -3,6 +3,7 @@ let app = express();
 let setWeatherData = require('./lib/weather-data.js');
 let credentials = require('./credentials.js');
 let flashMessage = require('./lib/flash-message.js');
+let setEmail = require('./lib/email.js');
 let cookie = require('cookie-parser')(credentials.cookieSecret);
 let session = require('express-session')({
   resave: true,
@@ -10,7 +11,6 @@ let session = require('express-session')({
   secret: credentials.cookieSecret,
 });
 let bodyParser = require('body-parser');
-
 let handlebars = require('express3-handlebars').create({
 		defaultLayout:'main',
 		helpers:{
@@ -32,6 +32,9 @@ app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 app.disable('x-powered-by');
+
+
+setEmail('2815808397@qq.com','一枚邮件','没啥内容！');
 
 app.use(cookie);
 app.use(session);
