@@ -44,7 +44,8 @@ router.post('/upload',(req,res)=>{
 				fs.renameSync(files[i].path,dir+'/'+files[i].name);
 			}
 			res.json({
-				msg:'success'
+				msg:'success',
+				filename:files['file'].name
 			});
 		});
 	}catch(err){

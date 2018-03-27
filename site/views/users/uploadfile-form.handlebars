@@ -15,7 +15,8 @@
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
-					<span>\{{v.jd}}%</span>
+					<span v-if="!v.txt">\{{v.jd}}%</span>
+					<span v-else>\{{v.txt}}</span>
 				</div>
 			</div>
 		</div>
@@ -31,7 +32,8 @@
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
-					<span>\{{v.jd}}%</span>
+					<span v-if="!v.txt">\{{v.jd}}%</span>
+					<span v-else>\{{v.txt}}</span>
 				</div>
 			</div>
 		</div>
@@ -48,7 +50,8 @@
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
-					<span>\{{v.jd}}%</span>
+					<span v-if="!v.txt">\{{v.jd}}%</span>
+					<span v-else>\{{v.txt}}</span>
 				</div>
 			</div>
 		</div>
@@ -64,7 +67,8 @@
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
-					<span>\{{v.jd}}%</span>
+					<span v-if="!v.txt">\{{v.jd}}%</span>
+					<span v-else>\{{v.txt}}</span>
 				</div>
 			</div>
 		</div>
@@ -112,7 +116,8 @@
 						fd.append('file',files[i]);
 						thisfiles.push({
 							name:files[i].name,
-							jd:0
+							jd:0,
+							txt:''
 						});
 						$.ajax({
 							url:'/users/upload',
@@ -120,8 +125,15 @@
 							data:fd,
 							contentType:false,
 							processData:false,
-							success:function(){
-								console.log('ok');
+							success:function(data){
+								if(data.msg == 'success'){
+									thisfiles.map(function(obj){
+										if(obj.name === data.filename){
+											obj.txt = '上传成功！';
+										}
+										return obj;
+									});
+								}
 							},
 							xhr:function(){
 								var xhr = $.ajaxSettings.xhr();
@@ -130,12 +142,24 @@
 								}
 								if(xhr.upload){
 									xhr.upload.addEventListener('progress',function(e){
-										thisfiles.map(function(obj){
-											if(obj.name === xhr.name){
-												obj.jd = parseInt(e.loaded/e.total*100);
-											}
-											return obj;
-										});
+										var cjd = parseInt(e.loaded/e.total*100);
+										if(cjd<80){
+											thisfiles.map(function(obj){
+												if(obj.name === xhr.name){
+													obj.jd = cjd
+												}
+												return obj;
+											});
+										}else{
+											thisfiles.map(function(obj){
+												if(obj.name === xhr.name){
+													obj.txt = '解析中。。';
+													obj.jd = cjd;
+												}
+												return obj;
+											});
+											console.log(thisfiles);
+										}
 									});
 								}
 								return xhr;
