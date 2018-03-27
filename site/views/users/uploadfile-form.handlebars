@@ -7,7 +7,7 @@
 		<div class="upload-content">
 			<label class="upload-button">
 				Please select a file
-				<input type="file" @change="upload(1,$event)" multiple>	
+				<input type="file" @change="upload(1,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
 				<div class="file" v-for="v in files1">
@@ -24,7 +24,7 @@
 		<div class="upload-content">
 			<label class="upload-button">
 				Please select a file
-				<input type="file" @change="upload(2,$event)" multiple>	
+				<input type="file" @change="upload(2,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
 				<div class="file" v-for="v in files2">
@@ -42,7 +42,7 @@
 		<div class="upload-content">
 			<label class="upload-button">
 				Please select a file
-				<input type="file" @change="upload(3,$event)" multiple>	
+				<input type="file" @change="upload(3,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
 				<div class="file" v-for="v in files3">
@@ -59,7 +59,7 @@
 		<div class="upload-content">
 			<label class="upload-button">
 				Please select a file
-				<input type="file" @change="upload(4,$event)" multiple>	
+				<input type="file" @change="upload(4,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
 				<div class="file" v-for="v in files4">
@@ -89,9 +89,29 @@
 				'/users/upload'
 			]
 		},
-		mounted:function(){},
+		mounted:function(){
+			this.files2 = [
+				{
+					name:'afe.rar',
+					jd:100,
+					txt:'已上传'
+				},
+				{
+					name:'bdhfj.mp4',
+					jd:100,
+					txt:'已上传'
+				}
+			];
+			this.files3 = [
+				{
+					name:'ghgggg.avi',
+					jd:100,
+					txt:'已上传'
+				}
+			]
+		},
 		methods:{
-			upload:function(type,e){
+			upload:function(type,e,fn){
 				var _this = this;
 				var files = e.target.files;
 				var thisfiles = this['files'+type];
@@ -119,56 +139,99 @@
 							jd:0,
 							txt:''
 						});
-						$.ajax({
-							url:'/users/upload',
-							type:'post',
-							data:fd,
-							contentType:false,
-							processData:false,
-							success:function(data){
-								if(data.msg == 'success'){
-									thisfiles.map(function(obj){
-										if(obj.name === data.filename){
-											obj.txt = '上传成功！';
-										}
-										return obj;
-									});
-								}
-							},
-							xhr:function(){
-								var xhr = $.ajaxSettings.xhr();
-								if(!xhr.name){
-									xhr.name = files[i].name;
-								}
-								if(xhr.upload){
-									xhr.upload.addEventListener('progress',function(e){
-										var cjd = parseInt(e.loaded/e.total*100);
-										if(cjd<80){
-											thisfiles.map(function(obj){
-												if(obj.name === xhr.name){
-													obj.jd = cjd
-												}
-												return obj;
-											});
-										}else{
-											thisfiles.map(function(obj){
-												if(obj.name === xhr.name){
-													obj.txt = '解析中。。';
-													obj.jd = cjd;
-												}
-												return obj;
-											});
-											console.log(thisfiles);
-										}
-									});
-								}
-								return xhr;
+						// $.ajax({
+						// 	url:'/users/upload',
+						// 	type:'post',
+						// 	data:fd,
+						// 	contentType:false,
+						// 	processData:false,
+						// 	success:function(data){
+						// 		if(data.msg == 'success'){
+						// 			thisfiles.map(function(obj){
+						// 				if(obj.name === data.filename){
+						// 					obj.txt = '上传成功！';
+						// 				}
+						// 				return obj;
+						// 			});
+						// 		}
+						// 	},
+						// 	xhr:function(){
+						// 		var xhr = $.ajaxSettings.xhr();
+						// 		if(!xhr.name){
+						// 			xhr.name = files[i].name;
+						// 		}
+						// 		if(xhr.upload){
+						// 			xhr.upload.addEventListener('progress',function(e){
+						// 				var cjd = parseInt(e.loaded/e.total*100);
+						// 				if(cjd<80){
+						// 					thisfiles.map(function(obj){
+						// 						if(obj.name === xhr.name){
+						// 							obj.jd = cjd
+						// 						}
+						// 						return obj;
+						// 					});
+						// 				}else{
+						// 					thisfiles.map(function(obj){
+						// 						if(obj.name === xhr.name){
+						// 							obj.txt = '解析中。。';
+						// 							obj.jd = cjd;
+						// 						}
+						// 						return obj;
+						// 					});
+						// 				}
+						// 			});
+						// 		}
+						// 		return xhr;
+						// 	}
+						// });
+						// 原生ajax发送
+						(function(){
+							var xmlHttp = new XMLHttpRequest();
+							xmlHttp.onreadystatechange = function () {
+							    if (xmlHttp.readyState == 4) {
+							        if (xmlHttp.status == 200) {
+							            var data = JSON.parse(xmlHttp.responseText);
+							            thisfiles.map(function (obj) {
+							                if (obj.name == data.filename) {
+							                    obj.jd = 100;
+							                    obj.txt = '上传成功！';
+							                }
+							                return obj;
+							            });
+									}
+							    }
 							}
-						});
+							xmlHttp.open("post", '/users/upload');
+							if (!xmlHttp.name) {
+							    xmlHttp.name = files[i].name;
+							}
+							xmlHttp.upload.onprogress = function (e) {
+								var cjd = parseInt(e.loaded/e.total*100);
+								if (cjd <= 80) {
+								    thisfiles.map(function (obj) {
+								        if (obj.name === xmlHttp.name) {
+								            obj.jd = cjd;
+								        }
+								        return obj;
+								    });
+								} else {
+								    thisfiles.map(function (obj) {
+								        if (obj.name === xmlHttp.name) {
+								            obj.jd = cjd;
+								            obj.txt = '解析中。';
+								        }
+								        return obj;
+								    });
+								}
+								console.log(xmlHttp.name);
+
+							};
+							xmlHttp.send(fd);
+						})();
 					}
 				}
 
-				$(e.target).val('');
+				fn(e);
 			}
 		}
 	});

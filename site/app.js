@@ -9,6 +9,7 @@ let session = require('express-session')({
   saveUninitialized: true,
   secret: credentials.cookieSecret,
 });
+let bodyParser = require('body-parser');
 
 let handlebars = require('express3-handlebars').create({
 		defaultLayout:'main',
@@ -34,6 +35,8 @@ app.disable('x-powered-by');
 
 app.use(cookie);
 app.use(session);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
 app.use(setWeatherData);
 app.use(flashMessage);
 app.use(express.static(__dirname+'/public'));

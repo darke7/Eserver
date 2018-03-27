@@ -25,12 +25,22 @@ router.get('/registered-form',(req,res)=>{
 
 
 router.post('/newsletter',(req,res)=>{
-	req.session.flash = {
-		type:'success',
-		intro:'registration success！',
-		message:"Your password is '5415rs._s'"
+	if(req.body.name&&req.body.email.match(/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/)){
+		req.session.flash = {
+			type:'success',
+			intro:'registration success！',
+			message:"Your password is '5415rs._s'."
+		}
+		res.redirect(303,'thank-you');
+	}else{
+		req.session.flash = {
+			type:'danger',
+			intro:'registration fail！',
+			message:"Please enter the correct name and email address."
+		}
+		res.redirect(303,'registered-form');
 	}
-	res.redirect(303,'thank-you');
+
 });
 
 router.post('/upload',(req,res)=>{
