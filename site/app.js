@@ -1,5 +1,6 @@
 let express = require('express');
-let app = express();
+let fs = require('fs');
+let path = require('path');
 let setWeatherData = require('./lib/weather-data.js');
 let credentials = require('./credentials.js');
 let flashMessage = require('./lib/flash-message.js');
@@ -11,6 +12,8 @@ let session = require('express-session')({
   secret: credentials.cookieSecret,
 });
 let bodyParser = require('body-parser');
+let morgan = require('morgan');
+let fileStreamRotator = require('file-stream-rotator');
 let handlebars = require('express3-handlebars').create({
 		defaultLayout:'main',
 		helpers:{
@@ -24,17 +27,36 @@ let handlebars = require('express3-handlebars').create({
 		}
 	});
 
+let app = express();
 let api = require('./router/api.js');
 let home = require('./router/home.js');
 let users = require('./router/users.js');
+
+app.set('env','production');
 
 app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 app.disable('x-powered-by');
 
-
-setEmail('2815808397@qq.com','一枚邮件','没啥内容！');
+switch(app.get('env')){
+	case 'development':
+		app.use(morgan('env'));
+		break;
+	case 'production':
+		app.set('view cache',true);
+		let logDir = path.join(process.cwd(),'logs');
+		fs.existsSync(logDir)||fs.mkdirSync(logDir);
+		// let accessLogStream = fs.createWriteStream(path.join(process.cwd(),'Eserver.log'), {flags: 'a'});
+		var accessLogStream = fileStreamRotator.getStream({
+		    date_format: 'YYYYMMDD',
+		    filename: path.join(logDir, 'access-%DATE%.log'),
+		    frequency: 'daily',
+		    verbose: true
+		});
+		app.use(morgan('short', {stream: accessLogStream}));
+		break;
+}
 
 app.use(cookie);
 app.use(session);
@@ -63,7 +85,18 @@ app.use((err,req,res,next)=>{
 	res.render('500');
 });
 
-app.listen(app.get('port'),(req,res)=>{
-	console.log(`started ${app.get('env')}:http://localhost:${app.get('port')}`);
-});
+var log = `started ${app.get('env')} and view_cache ${app.get('view cache')},url:http://localhost:${app.get('port')}`;
+let startServer = (log)=>{
+	app.listen(app.get('port'),(req,res)=>{
+		if(log)console.log(log);
+	});
+};
 
+if(require.main === module){
+	startServer(log);
+}else{
+	module.exports = {
+		startServer,
+		log
+	};
+}
