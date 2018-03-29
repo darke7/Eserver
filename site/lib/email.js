@@ -8,7 +8,7 @@ let mailTransport = nodemailer.createTransport({
 	}
 });
 
-let setEmail = (to,title,body)=>{
+let sendEmail = (to,title,body)=>{
 	mailTransport.sendMail({
 		from:`"Eserver" <${credentials.email.user}>`,
 		to,
@@ -21,4 +21,6 @@ let setEmail = (to,title,body)=>{
 	});
 };
 
-module.exports = setEmail
+
+
+module.exports = sendEmail;

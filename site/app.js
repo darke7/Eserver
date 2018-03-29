@@ -4,7 +4,8 @@ let path = require('path');
 let setWeatherData = require('./lib/weather-data.js');
 let credentials = require('./credentials.js');
 let flashMessage = require('./lib/flash-message.js');
-let setEmail = require('./lib/email.js');
+let sendEmail = require('./lib/email.js');
+let favicon = require('serve-favicon');
 let cookie = require('cookie-parser')(credentials.cookieSecret);
 let session = require('express-session')({
   resave: true,
@@ -61,7 +62,7 @@ switch(app.get('env')){
 app.use((req,res,next)=>{
 	let domain = require('domain').create();
 	domain.on('error',(err)=>{
-		// console.error('域错误：',err.stack);
+		console.error('Domain error',err.stack);
 		try{
 			setTimeout(()=>{
 				console.log('Fail-safe shutdown！');
@@ -78,17 +79,20 @@ app.use((req,res,next)=>{
 				console.error('Unable to use wrong route, will return a text response. . .',err.stack);
 				res.statusCode = 500;
 				res.setHeader('content-type','text/plain');
-				res.end('server error.');
+				res.end('sorry this service is currently abnormal.');
 			}
 		}catch(err){
 			console.error('Unable to return error message. . .',err.stack);
 		}
+		sendEmail('3129335443@qq.com','您的网站出错了！',err.stack);
 	});
 	domain.add(req);
 	domain.add(res);
 	domain.run(next);
 });
 
+// uncomment after placing your favicon in /public
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(cookie);
 app.use(session);
 app.use(bodyParser.json());
