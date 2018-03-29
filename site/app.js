@@ -31,6 +31,7 @@ let app = express();
 let api = require('./router/api.js');
 let home = require('./router/home.js');
 let users = require('./router/users.js');
+let test = require('./router/test.js');
 
 app.set('env','production');
 
@@ -48,15 +49,45 @@ switch(app.get('env')){
 		let logDir = path.join(process.cwd(),'logs');
 		fs.existsSync(logDir)||fs.mkdirSync(logDir);
 		// let accessLogStream = fs.createWriteStream(path.join(process.cwd(),'Eserver.log'), {flags: 'a'});
-		var accessLogStream = fileStreamRotator.getStream({
-		    date_format: 'YYYYMMDD',
-		    filename: path.join(logDir, 'access-%DATE%.log'),
-		    frequency: 'daily',
-		    verbose: true
-		});
+		let accessLogStream = fileStreamRotator.getStream({
+		  filename: path.join(logDir,'/access-%DATE%.log'),
+		  frequency: 'daily',
+		  verbose: false
+		})
 		app.use(morgan('short', {stream: accessLogStream}));
 		break;
 }
+
+app.use((req,res,next)=>{
+	let domain = require('domain').create();
+	domain.on('error',(err)=>{
+		// console.error('域错误：',err.stack);
+		try{
+			setTimeout(()=>{
+				console.log('Fail-safe shutdown！');
+				process.exit(1);
+			}, 5000);
+			let worker = require('cluster').worker;
+			if(worker){
+				worker.disconnect();
+			}
+			server.close();
+			try{
+				next(err);
+			}catch(err){
+				console.error('Unable to use wrong route, will return a text response. . .',err.stack);
+				res.statusCode = 500;
+				res.setHeader('content-type','text/plain');
+				res.end('server error.');
+			}
+		}catch(err){
+			console.error('Unable to return error message. . .',err.stack);
+		}
+	});
+	domain.add(req);
+	domain.add(res);
+	domain.run(next);
+});
 
 app.use(cookie);
 app.use(session);
@@ -69,8 +100,12 @@ app.use(express.static(__dirname+'/public'));
 app.use('/api',api);
 app.use('/', home);
 app.use('/users',users);
-
-
+app.use('/test',test);
+app.get('/epic-fail',(req,res)=>{
+	process.nextTick(()=>{
+		throw new Error('Worker died');
+	});
+});
 
 
 
@@ -85,9 +120,10 @@ app.use((err,req,res,next)=>{
 	res.render('500');
 });
 
-var log = `started ${app.get('env')} and view_cache ${app.get('view cache')},url:http://localhost:${app.get('port')}`;
+let server;
+let log = `started ${app.get('env')} and view_cache ${app.get('view cache')},url:http://localhost:${app.get('port')}`;
 let startServer = (log)=>{
-	app.listen(app.get('port'),(req,res)=>{
+	server = app.listen(app.get('port'),(req,res)=>{
 		if(log)console.log(log);
 	});
 };

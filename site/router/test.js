@@ -7,4 +7,8 @@ router.get('/epic-fail',(req,res)=>{
 	});
 });
 
+router.get('/fail',()=>{
+	throw new Error('nope');
+});
+
 module.exports = router;

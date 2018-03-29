@@ -94,19 +94,19 @@
 				{
 					name:'afe.rar',
 					jd:100,
-					txt:'已上传'
+					txt:'uploaded!'
 				},
 				{
 					name:'bdhfj.mp4',
 					jd:100,
-					txt:'已上传'
+					txt:'uploaded!'
 				}
 			];
 			this.files3 = [
 				{
 					name:'ghgggg.avi',
 					jd:100,
-					txt:'已上传'
+					txt:'uploaded!'
 				}
 			]
 		},
@@ -126,7 +126,7 @@
 					}
 				}
 				if(!k){
-					alert('已有此文件');
+					alert('Already have this file!');
 					$(e.target).val('');
 					return;
 				}
@@ -149,7 +149,7 @@
 						// 		if(data.msg == 'success'){
 						// 			thisfiles.map(function(obj){
 						// 				if(obj.name === data.filename){
-						// 					obj.txt = '上传成功！';
+						// 					obj.txt = 'uploaded!';
 						// 				}
 						// 				return obj;
 						// 			});
@@ -173,7 +173,7 @@
 						// 				}else{
 						// 					thisfiles.map(function(obj){
 						// 						if(obj.name === xhr.name){
-						// 							obj.txt = '解析中。。';
+						// 							obj.txt = 'Parsing. . .。';
 						// 							obj.jd = cjd;
 						// 						}
 						// 						return obj;
@@ -194,7 +194,7 @@
 							            thisfiles.map(function (obj) {
 							                if (obj.name == data.filename) {
 							                    obj.jd = 100;
-							                    obj.txt = '上传成功！';
+							                    obj.txt = 'uploaded!';
 							                }
 							                return obj;
 							            });
@@ -218,7 +218,7 @@
 								    thisfiles.map(function (obj) {
 								        if (obj.name === xmlHttp.name) {
 								            obj.jd = cjd;
-								            obj.txt = '解析中。';
+								            obj.txt = 'Parsing. . .';
 								        }
 								        return obj;
 								    });
