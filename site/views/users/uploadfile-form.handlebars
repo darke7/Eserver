@@ -17,7 +17,7 @@
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
-					<span class="del" @click="del(1,v.xhr,k)">del</span>
+					<span class="del" @click="del(1,k,v)">del</span>
 				</div>
 			</div>
 		</div>
@@ -35,7 +35,7 @@
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
-					<span class="del" @click="del(2,v.xhr,k)">del</span>
+					<span class="del" @click="del(2,k,v)">del</span>
 				</div>
 			</div>
 		</div>
@@ -54,7 +54,7 @@
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
-					<span class="del" @click="del(3,v.xhr,k)">del</span>
+					<span class="del" @click="del(3,k,v)">del</span>
 				</div>
 			</div>
 		</div>
@@ -72,7 +72,7 @@
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
-					<span class="del" @click="del(4,v.xhr,k)">del</span>
+					<span class="del" @click="del(4,k,v)">del</span>
 				</div>
 			</div>
 		</div>
@@ -182,13 +182,16 @@
 							    if (xmlHttp.readyState == 4) {
 							        if (xmlHttp.status == 200) {
 							            var data = JSON.parse(xmlHttp.responseText);
-							            thisfiles.map(function (obj) {
-							                if (obj.name == data.filename) {
-							                    obj.jd = 100;
-							                    obj.txt = 'uploaded!';
-							                }
-							                return obj;
-							            });
+							            if(data.msg == 1){
+							            	thisfiles.map(function (obj) {
+								                if (obj.name == data.filename) {
+								                    obj.jd = 100;
+								                    obj.txt = 'uploaded!';
+								                    obj.xhr = '';
+								                }
+								                return obj;
+								            });
+							            }
 									}
 							    }
 							}
@@ -224,10 +227,25 @@
 
 				fn(e);
 			},
-			del:function(type,xhr,k){
-				xhr.abort();
+			del:function(type,k,v){
 				var thisfiles = this['files'+type];
-				thisfiles.splice(k,1);
+				if(v.xhr){
+					v.xhr.abort();
+					thisfiles.splice(k,1);
+				}else{
+					$.ajax({
+						url:'del',
+						data:{filename:v.name},
+						success:function(data){
+							if(data.msg == 1){
+								thisfiles.splice(k,1);
+							}else{
+								alert('del fail!');
+							}
+						}
+					});
+				}
+				
 			}
 		}
 	});

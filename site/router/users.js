@@ -54,12 +54,12 @@ router.post('/upload',(req,res)=>{
 				ismkdir(dir);
 				fs.renameSync(file.path,dir+'/'+file.name);
 				res.json({
-					msg:'success',
+					msg:'1',
 					filename:file.name
 				});
 			}else{
 				res.json({
-					msg:'not found file!'
+					msg:'0'
 				});
 			}
 		});
@@ -68,6 +68,29 @@ router.post('/upload',(req,res)=>{
 		res.json({
 			msg:'err'
 		});
+	}
+});
+
+router.get('/del',(req,res)=>{
+	let filename = req.query.filename||'';
+	if(filename){
+		let dir = usersDir+'/id33183df/'+filename;
+		fs.unlink(dir, (err) => {
+		  if (err) {
+		  	res.json({
+			  	msg:"0"
+			  })
+		  }else{
+		  	res.json({
+		  		msg:"1"
+		  	})
+		  };
+		  
+		});
+	}else{
+		res.json({
+			msg:"0"
+		})
 	}
 });
 
