@@ -10,13 +10,14 @@
 				<input type="file" @change="upload(1,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
-				<div class="file" v-for="v in files1">
+				<div class="file" v-for="(v,k) in files1">
 					<span class="filename">\{{v.name}}</span>
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
+					<span class="del" @click="del(1,v.xhr,k)">del</span>
 				</div>
 			</div>
 		</div>
@@ -27,13 +28,14 @@
 				<input type="file" @change="upload(2,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
-				<div class="file" v-for="v in files2">
+				<div class="file" v-for="(v,k) in files2">
 					<span class="filename">\{{v.name}}</span>
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
+					<span class="del" @click="del(2,v.xhr,k)">del</span>
 				</div>
 			</div>
 		</div>
@@ -45,13 +47,14 @@
 				<input type="file" @change="upload(3,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
-				<div class="file" v-for="v in files3">
+				<div class="file" v-for="(v,k) in files3">
 					<span class="filename">\{{v.name}}</span>
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
+					<span class="del" @click="del(3,v.xhr,k)">del</span>
 				</div>
 			</div>
 		</div>
@@ -62,13 +65,14 @@
 				<input type="file" @change="upload(4,$event,function(e){$(e.target).val('')})" multiple>	
 			</label>
 			<div class="content">
-				<div class="file" v-for="v in files4">
+				<div class="file" v-for="(v,k) in files4">
 					<span class="filename">\{{v.name}}</span>
 					<div class="jd">
 						<div :style="{width:v.jd+'%'}"></div>
 					</div>
 					<span v-if="!v.txt">\{{v.jd}}%</span>
 					<span v-else>\{{v.txt}}</span>
+					<span class="del" @click="del(4,v.xhr,k)">del</span>
 				</div>
 			</div>
 		</div>
@@ -116,29 +120,10 @@
 				var files = e.target.files;
 				var thisfiles = this['files'+type];
 				var url = this.urls[0];
-				var k = true;
-				for(i in files){
-					var isfile = thisfiles.some(function(obj){
-							return obj.name == files[i].name;
-						});
-					if(isfile){
-						k = false;
-					}
-				}
-				if(!k){
-					alert('Already have this file!');
-					$(e.target).val('');
-					return;
-				}
 				for(i in files){
 					if(!isNaN(i)){
 						var fd = new FormData();
 						fd.append('file',files[i]);
-						thisfiles.push({
-							name:files[i].name,
-							jd:0,
-							txt:''
-						});
 						// $.ajax({
 						// 	url:'/users/upload',
 						// 	type:'post',
@@ -187,6 +172,12 @@
 						// 原生ajax发送
 						(function(){
 							var xmlHttp = new XMLHttpRequest();
+							thisfiles.push({
+								name:files[i].name,
+								jd:0,
+								txt:'',
+								xhr:xmlHttp
+							});
 							xmlHttp.onreadystatechange = function () {
 							    if (xmlHttp.readyState == 4) {
 							        if (xmlHttp.status == 200) {
@@ -207,7 +198,7 @@
 							}
 							xmlHttp.upload.onprogress = function (e) {
 								var cjd = parseInt(e.loaded/e.total*100);
-								if (cjd <= 80) {
+								if (cjd <= 99) {
 								    thisfiles.map(function (obj) {
 								        if (obj.name === xmlHttp.name) {
 								            obj.jd = cjd;
@@ -232,6 +223,11 @@
 				}
 
 				fn(e);
+			},
+			del:function(type,xhr,k){
+				xhr.abort();
+				var thisfiles = this['files'+type];
+				thisfiles.splice(k,1);
 			}
 		}
 	});

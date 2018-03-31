@@ -29,6 +29,12 @@
 	.file span{
 		float: left;
 	}
+	.file .del{
+		height: 40px;
+		padding: 0 5px;
+		border: 1px solid gray;
+		cursor: pointer;
+	}
 	.upload-content{
 		border:1px solid gray;
 		padding: 10px;

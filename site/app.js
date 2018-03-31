@@ -34,7 +34,7 @@ let home = require('./router/home.js');
 let users = require('./router/users.js');
 let test = require('./router/test.js');
 
-app.set('env','production');
+// app.set('env','production');
 
 app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
@@ -43,7 +43,7 @@ app.disable('x-powered-by');
 
 switch(app.get('env')){
 	case 'development':
-		app.use(morgan('env'));
+		// app.use(morgan('env'));
 		break;
 	case 'production':
 		app.set('view cache',true);

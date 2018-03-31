@@ -48,15 +48,20 @@ router.post('/upload',(req,res)=>{
 		let form = formidable.IncomingForm();
 		form.maxFileSize = 400 * 200 * 1024 * 1024;
 		form.parse(req,(err,fileds,files)=>{
-			let dir = usersDir+'/id33183df';
-			ismkdir(dir);
-			for(i in files){
-				fs.renameSync(files[i].path,dir+'/'+files[i].name);
+			var file = files.file||'';
+			if(file){
+				let dir = usersDir+'/id33183df';
+				ismkdir(dir);
+				fs.renameSync(file.path,dir+'/'+file.name);
+				res.json({
+					msg:'success',
+					filename:file.name
+				});
+			}else{
+				res.json({
+					msg:'not found file!'
+				});
 			}
-			res.json({
-				msg:'success',
-				filename:files['file'].name
-			});
 		});
 	}catch(err){
 		console.error(err);
