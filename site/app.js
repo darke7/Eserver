@@ -8,11 +8,12 @@ let sendEmail = require('./lib/email.js');
 let db = require('./lib/db.js');
 let favicon = require('serve-favicon');
 let cookie = require('cookie-parser')(credentials.cookieSecret);
-let session = require('express-session')({
-  resave: true,
-  saveUninitialized: true,
-  secret: credentials.cookieSecret,
-});
+// let session = require('express-session');
+// let MongoStore = require('connect-mongo')(session);
+  // resave: true,
+  // saveUninitialized: true,
+  // secret: credentials.cookieSecret,
+
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let fileStreamRotator = require('file-stream-rotator');
@@ -96,7 +97,19 @@ switch(app.get('env')){
 		break;
 }
 app.use(cookie);
-app.use(session);
+// app.use(session({
+//     secret: credentials.cookieSecret,
+//     store: new MongoStore({mongooseConnection:credentials.mongo.development})
+// }));
+const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
+ 
+app.use(session({
+    secret: credentials.cookieSecret,
+    saveUninitialized: false, // don't create session until something stored
+    resave: false, //don't save session if unmodified
+    store: new MongoStore({url:credentials.mongo.development,touchAfter: 24 * 3600})
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(setWeatherData);
