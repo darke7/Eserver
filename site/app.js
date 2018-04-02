@@ -8,12 +8,8 @@ let sendEmail = require('./lib/email.js');
 let db = require('./lib/db.js');
 let favicon = require('serve-favicon');
 let cookie = require('cookie-parser')(credentials.cookieSecret);
-// let session = require('express-session');
-// let MongoStore = require('connect-mongo')(session);
-  // resave: true,
-  // saveUninitialized: true,
-  // secret: credentials.cookieSecret,
-
+let session = require('express-session');
+let MongoStore = require('connect-mongo')(session);
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let fileStreamRotator = require('file-stream-rotator');
@@ -29,6 +25,8 @@ let handlebars = require('express3-handlebars').create({
 			}
 		}
 	});
+
+let autoViews = {};
 
 let app = express();
 let api = require('./router/api.js');
@@ -97,13 +95,6 @@ switch(app.get('env')){
 		break;
 }
 app.use(cookie);
-// app.use(session({
-//     secret: credentials.cookieSecret,
-//     store: new MongoStore({mongooseConnection:credentials.mongo.development})
-// }));
-const session = require('express-session');
-const MongoStore = require('connect-mongo')(session);
- 
 app.use(session({
     secret: credentials.cookieSecret,
     saveUninitialized: false, // don't create session until something stored
@@ -127,7 +118,17 @@ app.get('/epic-fail',(req,res)=>{
 });
 
 
-
+app.use((req,res,next)=>{
+	let path = req.path.toLowerCase();
+	if(autoViews[path]){
+		return res.render(autoViews[path]);
+	}
+	if(fs.existsSync(__dirname+'/views'+path+'.handlebars')){
+		autoViews[path] = path.replace(/^\//,'');
+		return res.render(autoViews[path]);
+	}
+	next();
+});
 app.use((req,res)=>{
 	res.status(404);
 	res.render('404');
