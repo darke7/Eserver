@@ -10,7 +10,7 @@ router.get('/',(req,res)=>{
 			vacations:vacations.map((vacation)=>{
 				return {
 					name:vacation.name,
-					price:vacation.displayPrice
+					price:convertFromUSD(vacation.displayPrice,currency)
 				}
 			})
 		};
@@ -39,7 +39,7 @@ let convertFromUSD = (value,currency)=>{
 	switch(currency){
 		case 'USD':return value*1;
 		case 'GBP':return value*0.6;
-		case 'BTC':return value*0.00237;
+		case 'BTC':return value*0.2237;
 		default:return NaN;
 	}
 }
