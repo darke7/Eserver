@@ -8,10 +8,26 @@ h1{
 	box-shadow:2px 2px 2px #000;
 	padding: 20px;
 }
-#fortune{
+.right-cont{
 	float: left;
+	margin-left: 30px;
+	width: 750px;
+}
+.right-cont #fortune{
 	margin-left: 50px;
 	width: 300px;
 	background: gray;
 	padding: 10px;
+	color:#fff;
+}
+.right-cont .vacations{
+	margin-top:50px;
+}
+.right-cont .vacations .vacation{
+	float:left;
+	width: 200px;
+	height: 100px;
+	border:1px solid #000;
+	margin: 10px;
+	padding: 5px;
 }

@@ -5,6 +5,7 @@ let setWeatherData = require('./lib/weather-data.js');
 let credentials = require('./credentials.js');
 let flashMessage = require('./lib/flash-message.js');
 let sendEmail = require('./lib/email.js');
+let db = require('./lib/db.js');
 let favicon = require('serve-favicon');
 let cookie = require('cookie-parser')(credentials.cookieSecret);
 let session = require('express-session')({
@@ -41,23 +42,6 @@ app.set('view engine', 'handlebars');
 app.set('port',process.env.POERT||3000);
 app.disable('x-powered-by');
 
-switch(app.get('env')){
-	case 'development':
-		// app.use(morgan('env'));
-		break;
-	case 'production':
-		app.set('view cache',true);
-		let logDir = path.join(process.cwd(),'logs');
-		fs.existsSync(logDir)||fs.mkdirSync(logDir);
-		// let accessLogStream = fs.createWriteStream(path.join(process.cwd(),'Eserver.log'), {flags: 'a'});
-		let accessLogStream = fileStreamRotator.getStream({
-		  filename: path.join(logDir,'/access-%DATE%.log'),
-		  frequency: 'daily',
-		  verbose: false
-		})
-		app.use(morgan('short', {stream: accessLogStream}));
-		break;
-}
 
 app.use((req,res,next)=>{
 	let domain = require('domain').create();
@@ -93,6 +77,24 @@ app.use((req,res,next)=>{
 
 // uncomment after placing your favicon in /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+switch(app.get('env')){
+	case 'development':
+	    app.set('view cache',false);
+		app.use(morgan('dev'));
+		break;
+	case 'production':
+		app.set('view cache',true);
+		let logDir = path.join(process.cwd(),'logs');
+		fs.existsSync(logDir)||fs.mkdirSync(logDir);
+		// let accessLogStream = fs.createWriteStream(path.join(process.cwd(),'Eserver.log'), {flags: 'a'});
+		let accessLogStream = fileStreamRotator.getStream({
+		  filename: path.join(logDir,'/access-%DATE%.log'),
+		  frequency: 'daily',
+		  verbose: false
+		})
+		app.use(morgan('short', {stream: accessLogStream}));
+		break;
+}
 app.use(cookie);
 app.use(session);
 app.use(bodyParser.json());

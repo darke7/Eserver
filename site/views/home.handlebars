@@ -5,7 +5,20 @@
 <div class="clearfix comWidth">
 	<h1>welcome Eserver!</h1>
 	{{> weather}}
-	<div id="fortune"></div>
+	<div class="right-cont">
+		<div id="fortune"></div>
+		<div class="vacations">
+			<h2>Vacations</h2>
+			{{#each vacations}}
+				<a href="http://www.baidu.com">
+					<div class="vacation">
+						<h3>{{name}}</h3>
+						<span class="price">{{price}}</span>
+					</div>
+				</a>
+			{{/each}}
+		</div>
+	</div>
 </div>
 
 {{#section 'jq'}}
