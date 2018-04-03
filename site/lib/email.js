@@ -10,7 +10,7 @@ let mailTransport = nodemailer.createTransport({
 
 let sendEmail = (to,title,body)=>{
 	mailTransport.sendMail({
-		from:`"Eserver" <${credentials.email.user}>`,
+		from:`"Eserver" <${config.email.user}>`,
 		to,
 		subject:title,
 		html:body,

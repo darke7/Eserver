@@ -2,6 +2,7 @@
   "dependencies": {
     "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
     "express3-handlebars": "^0.5.2",
@@ -10,6 +11,7 @@
     "mongoose": "^5.0.12",
     "morgan": "^1.9.0",
     "nodemailer": "^4.6.3",
-    "serve-favicon": "^2.4.5"
+    "serve-favicon": "^2.4.5",
+    "vhost": "^3.0.2"
   }
 }

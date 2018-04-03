@@ -11,4 +11,7 @@ router.get('/fail',()=>{
 	throw new Error('nope');
 });
 
+router.get('/add-attraction',(req,res)=>{
+	res.render('test/add-attraction');
+})
 module.exports = router;

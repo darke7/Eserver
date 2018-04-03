@@ -38,7 +38,7 @@ app.set('env',config.env||'production');
 
 app.engine('handlebars',handlebars.engine);
 app.set('view engine', 'handlebars');
-app.set('port',process.env.POERT||3000);
+app.set('port',config.port||3000);
 app.disable('x-powered-by');
 
 
@@ -107,6 +107,10 @@ app.use(setWeatherData);
 app.use(flashMessage);
 app.use(express.static(__dirname+'/public'));
 
+
+if(config.cors){
+	app.use('/api',require('cors')());
+}
 app.use('/api',api);
 app.use('/', home);
 app.use('/users',users);

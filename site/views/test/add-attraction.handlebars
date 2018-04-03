@@ -1,0 +1,156 @@
+{{#section 'head'}}
+	<style>
+		label{
+			display: block;
+			overflow: hidden;
+		}
+		.f_l{
+			float: left;
+		}
+		form{
+			width: 800px;
+			margin: auto;
+			margin-top: 50px;
+		}
+	</style>
+{{/section}}
+
+<form action="/api/attraction" method="post">
+	<label class="name">
+		name:
+		<input type="text" name="name">
+		<span class="err"></span>
+	</label>
+	<label class="lat">
+		经度：
+		<input type="text" name="lat">
+		<span class="err"></span>
+	</label>
+	<label class="lng">
+		维度：
+		<input type="text" name="lng">
+		<span class="err"></span>
+	</label>
+	<label class="email">
+		邮箱：
+		<input type="email" name="email">
+		<span class="err"></span>
+	</label>
+	<label class="description">
+		<span class="f_l">描述：</span>
+		<textarea name="description" id="" cols="30" rows="10"></textarea>
+		<span class="err"></span>
+	</label>
+	<input type="button" value="submit" class="submit">
+</form>
+
+
+{{#section 'jq'}}
+	<script>
+		$(function(){
+			var name = $('.name input');
+			var lat = $('.lat input');
+			var lng = $('.lng input');
+			var email = $('.email input');
+			var description = $('.description textarea');
+			var submit = $('.submit');
+			var flag = false;
+			function isname(){
+				var v = name.val();
+				var err = name.siblings('.err');
+				if(!v){
+					err.html('不能为空！');
+					flag = false;
+				}else if(!(/^[\u4E00-\u9FA5A-Za-z0-9]{6,12}$/.test(v))){
+					err.html('只能以6到10个汉字、英文字母、数字、下划线组成！');
+					flag = false;
+				}else{
+					err.html('');
+				};
+			}
+
+			function islat(){
+				var v = lat.val();
+				var err = lat.siblings('.err')
+				if(!v){
+					err.html('不能为空！');
+					flag = false;
+				}else if(!(/(^-\d{0,3}$)|(^\d{0,3}$)/.test(v))||v>180||v<-180){
+					err.html('只能以-180到180的数字');
+					flag = false;
+				}else{
+					err.html('');
+				};
+			}
+			function islng(){
+				var v = lng.val();
+				var err = lng.siblings('.err')
+				if(!v){
+					err.html('不能为空！');
+					flag = false;
+				}else if(!(/(^-\d{0,3}$)|(^\d{0,3}$)/.test(v))||v>180||v<-180){
+					err.html('只能以-180到180的数字');
+					flag = false;
+				}else{
+					err.html('');
+				};
+			}
+			function isemail(){
+				var v = email.val();
+				var err = email.siblings('.err')
+				if(!v){
+					err.html('不能为空！');
+					flag = false;
+				}else if(!(/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/.test(v))){
+					err.html('请输入正确的邮箱地址！');
+					flag = false;
+				}else{
+					err.html('');
+				};
+			}
+			function isdescription(){
+				var v = description.val();
+				var err = description.siblings('.err')
+				if(!v){
+					err.html('不能为空！');
+					flag = false;
+				}else{
+					err.html('');
+				};
+			}
+			name.on('input',isname);
+			lat.on('input',islat);
+			lng.on('input',islng);
+			email.on('input',isemail);
+			description.on('input',isdescription);
+			submit.on('click',function(){
+				flag = true;
+				isname();
+				islat();
+				islng();
+				isemail();
+				isdescription();
+				if(flag){
+					var data = {
+						name:name.val(),
+						lat:lat.val(),
+						lng:lng.val(),
+						email:email.val(),
+						description:description.val()
+					};
+					$.ajax({
+						url:'/api/attraction',
+						type:'post',
+						data:data,
+						success:function(data){
+							alert('加入成功！id:'+data.id);
+						}
+					});
+				}else{
+					alert('请填写正确的格式！');
+				}
+			});
+
+		});
+	</script>
+{{/section}}
