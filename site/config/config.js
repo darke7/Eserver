@@ -11,7 +11,8 @@ let config = {
 	admin:credentials.admin,
 	cors:credentials.cors,
 	port:'8080',
-	cors:true
+	cors:true,
+	vhost:true
 }
 
 module.exports = config;

@@ -111,7 +111,11 @@ app.use(express.static(__dirname+'/public'));
 if(config.cors){
 	app.use('/api',require('cors')());
 }
-app.use('/api',api);
+if(config.vhost){
+	app.use(require('vhost')('api.*',api))
+}else{
+	app.use('/api',api);
+}
 app.use('/', home);
 app.use('/users',users);
 app.use('/test',test);
