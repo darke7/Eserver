@@ -1,6 +1,6 @@
 let mongoose = require('mongoose');
-let credentials = require('../credentials.js');
-mongoose.connect(credentials.mongo.development);
+let config = require('../config/config.js');
+mongoose.connect(config.mongo);
 
 mongoose.connection.on('connected',()=>{
 	console.log('database connection successded!');
