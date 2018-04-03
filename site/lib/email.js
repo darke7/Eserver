@@ -1,10 +1,10 @@
-let credentials = require('../credentials.js');
+let config = require('../config/config.js');
 let nodemailer = require('nodemailer');
 let mailTransport = nodemailer.createTransport({
 	service:'qq',
 	auth:{
-		user:credentials.email.user,
-		pass:credentials.email.pass
+		user:config.email.user,
+		pass:config.email.pass
 	}
 });
 
@@ -20,7 +20,5 @@ let sendEmail = (to,title,body)=>{
 		console.error(err);
 	});
 };
-
-
 
 module.exports = sendEmail;
