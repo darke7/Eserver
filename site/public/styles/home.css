@@ -21,6 +21,7 @@ h1{
 	width: 750px;
 }
 #fortune{
+	border-radius: 10px;
 	width: 100%;
 	background: gray;
 	padding: 5px;
@@ -35,13 +36,13 @@ h1{
 	text-indent: 20px;
 }
 .right-cont .vacations a{
-	color:#333;
+	color:#fff;
 }
 .right-cont .vacations .vacation{
 	float:left;
 	width: 220px;
 	height: 160px;
-	border:1px solid #000;
+	border:1px solid #fff;
 	margin: 10px;
 	padding: 5px;
 }
@@ -56,20 +57,4 @@ h1{
 .currencys .currency.selected{
 	font-weight: bold;
 	font-size: 150%;
-}
-.logo{
-	display: inline-block;
-	width: 120px;
-	height: 120px;
-	border:2px solid gray;
-	border-radius: 50%;
-	overflow: hidden;
-	margin-left:-440px;
-	vertical-align: middle;
-}
-.logo img{
-	width: 100%;
-}
-.title{
-	text-align: center;
 }

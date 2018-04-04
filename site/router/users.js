@@ -25,6 +25,7 @@ router.get('/registered-form',(req,res)=>{
 
 
 router.post('/newsletter',(req,res)=>{
+	console.log(req.body.email);
 	if(req.body.name&&req.body.email.match(/^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$/)){
 		req.session.flash = {
 			type:'success',

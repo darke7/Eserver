@@ -9,3 +9,35 @@
 	width: 1000px;
 	margin: 0 auto;
 }
+body,html{
+	height: 100%;
+}
+body{
+	color:white;
+	background: url(../images/bg.jpg);
+}
+
+.logo{
+	display: inline-block;
+	width: 120px;
+	height: 120px;
+	border:2px solid gray;
+	border-radius: 50%;
+	overflow: hidden;
+	margin-left:-440px;
+	vertical-align: middle;
+}
+.logo img{
+	width: 100%;
+}
+.title{
+	text-align: center;
+}
+.img img{
+	width: 100%;
+}
+.err-cont{
+	width: 600px;
+	margin: auto;
+	margin-top: 100px;
+}
