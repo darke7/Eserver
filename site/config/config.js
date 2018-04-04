@@ -1,7 +1,7 @@
 let credentials = require('../credentials.js');
 let config = {
 	$salt:credentials.cookieSecret,
-	env:'production',
+	env:'development',
 	email:{
 		user:credentials.email.user,
 		pass:credentials.email.pass
@@ -12,7 +12,7 @@ let config = {
 	cors:credentials.cors,
 	port:'8080',
 	cors:true,
-	vhost:true
+	vhost:false
 }
 
 module.exports = config;

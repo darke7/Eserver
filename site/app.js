@@ -22,6 +22,9 @@ let handlebars = require('express3-handlebars').create({
 				}
 				this._sections[name] = options.fn(this);
 				return null;
+			},
+			static(name){
+				return require('./lib/static.js')(name);
 			}
 		}
 	});
