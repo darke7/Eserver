@@ -108,6 +108,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(setWeatherData);
 app.use(flashMessage);
+app.use((req,res,next)=>{
+	res.set({'Cache-Control':1000*60*60});
+	res.set({'Etag':125});
+	next();
+});
 app.use(express.static(__dirname+'/public'));
 
 
